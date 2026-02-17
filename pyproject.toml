@@ -1,0 +1,48 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pine-mcp-server"
+version = "0.1.0"
+description = "MCP server for Pine AI Assistant — manage sessions, send messages, and track tasks via any MCP client."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+authors = [{ name = "Pine AI" }]
+keywords = ["mcp", "pine", "ai", "assistant", "automation", "bill-negotiation"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "License :: OSI Approved :: MIT License",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries",
+]
+dependencies = [
+    "fastmcp>=2.0.0,<3",
+    "pine-assistant>=0.1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-asyncio>=0.23.0",
+    "ruff>=0.4.0",
+]
+
+[project.scripts]
+pine-mcp-server = "pine_mcp_server.server:main"
+
+[project.urls]
+Homepage = "https://pypi.org/project/pine-mcp-server/"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/pine_mcp_server"]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
