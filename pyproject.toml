@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "pine-mcp-server"
-version = "0.1.0"
+version = "0.1.1"
 description = "MCP server for Pine AI Assistant — manage sessions, send messages, and track tasks via any MCP client."
 readme = "README.md"
 license = "MIT"
@@ -38,7 +38,9 @@ dev = [
 pine-mcp-server = "pine_mcp_server.server:main"
 
 [project.urls]
-Homepage = "https://pypi.org/project/pine-mcp-server/"
+Homepage = "https://github.com/19PINE-AI/pine-mcp-server"
+Repository = "https://github.com/19PINE-AI/pine-mcp-server"
+Issues = "https://github.com/19PINE-AI/pine-mcp-server/issues"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/pine_mcp_server"]
