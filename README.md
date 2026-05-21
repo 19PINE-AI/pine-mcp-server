@@ -141,6 +141,7 @@ There is no real-time streaming. The agent periodically loads the conversation h
 | `PINE_ACCESS_TOKEN` | Yes* | Pine AI access token |
 | `PINE_USER_ID` | Yes* | Pine AI user ID |
 | `PINE_BASE_URL` | No | Pine AI backend URL (default: `https://www.19pine.ai`) |
+| `PINE_DEVICE_ID` | No | Stable device identifier. Recommended when the server runs as a subprocess (Claude Desktop, Cursor) — otherwise a fresh random ID is generated on each launch if `~/.pine/device_id` is unwritable. |
 
 \* Not required if you authenticate at runtime using the auth tools.
 

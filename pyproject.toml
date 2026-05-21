@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "pine-mcp-server"
-version = "0.1.1"
+version = "0.1.2"
 description = "MCP server for Pine AI Assistant — manage sessions, send messages, and track tasks via any MCP client."
 readme = "README.md"
 license = "MIT"
@@ -24,7 +24,7 @@ classifiers = [
 ]
 dependencies = [
     "fastmcp>=2.0.0,<3",
-    "pine-assistant>=0.1.0",
+    "pine-assistant>=0.3.2",
 ]
 
 [project.optional-dependencies]

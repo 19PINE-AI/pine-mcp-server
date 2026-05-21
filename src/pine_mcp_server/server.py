@@ -203,6 +203,11 @@ class PineClient:
         self._access_token: Optional[str] = os.environ.get("PINE_ACCESS_TOKEN")
         self._user_id: Optional[str] = os.environ.get("PINE_USER_ID")
         self._base_url: str = os.environ.get("PINE_BASE_URL", "https://www.19pine.ai")
+        # When the MCP server runs as a subprocess (Claude Desktop, Cursor),
+        # ~/.pine/device_id may not be writable or HOME may differ from the
+        # interactive shell that issued the token. Honor PINE_DEVICE_ID so
+        # the device identity stays stable across restarts.
+        self._device_id: Optional[str] = os.environ.get("PINE_DEVICE_ID")
         self._client: Optional[AsyncPineAI] = None
 
     def _ensure_client(self) -> AsyncPineAI:
@@ -211,6 +216,7 @@ class PineClient:
                 access_token=self._access_token,
                 user_id=self._user_id,
                 base_url=self._base_url,
+                device_id=self._device_id,
             )
         return self._client
 
