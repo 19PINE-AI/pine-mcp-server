@@ -2,11 +2,11 @@
 
 from __future__ import annotations
 
-import json
 from typing import TYPE_CHECKING, Any, Optional
 
 from pine_assistant import AsyncPineAI
-from pine_assistant.errors import PineAIError
+
+from pine_mcp_server.tools._helpers import format_error
 
 if TYPE_CHECKING:
     from fastmcp import FastMCP
@@ -188,7 +188,5 @@ def register_history_tools(mcp: FastMCP, pine: PineClient) -> None:
                 lines.append(f"\n[More messages available — call with from_message_id=\"{next_id}\"]")
 
             return "\n".join(lines)
-        except PineAIError as e:
-            return json.dumps({"success": False, "error": e.code, "message": str(e)})
         except Exception as e:
-            return json.dumps({"success": False, "error": "unexpected_error", "message": str(e)})
+            return format_error(e)

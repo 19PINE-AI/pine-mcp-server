@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from typing import TYPE_CHECKING
 
-from pine_assistant.errors import PineAIError
+from pine_mcp_server.tools._helpers import format_error
 
 if TYPE_CHECKING:
     from fastmcp import FastMCP
@@ -30,10 +30,8 @@ def register_auth_tools(mcp: FastMCP, pine: PineClient) -> None:
                 "request_token": token,
                 "message": f"Verification code sent to {email}. Ask the user for the code.",
             })
-        except PineAIError as e:
-            return json.dumps({"success": False, "error": e.code, "message": str(e)})
         except Exception as e:
-            return json.dumps({"success": False, "error": "unexpected_error", "message": str(e)})
+            return format_error(e)
 
     @mcp.tool
     async def pine_auth_verify_code(email: str, code: str, request_token: str) -> str:
@@ -52,7 +50,5 @@ def register_auth_tools(mcp: FastMCP, pine: PineClient) -> None:
                 "message": "Authentication successful. You can now use all Pine AI tools.",
                 "user_id": user_id,
             })
-        except PineAIError as e:
-            return json.dumps({"success": False, "error": e.code, "message": str(e)})
         except Exception as e:
-            return json.dumps({"success": False, "error": "unexpected_error", "message": str(e)})
+            return format_error(e)

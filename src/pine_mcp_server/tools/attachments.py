@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from typing import TYPE_CHECKING
 
-from pine_assistant.errors import PineAIError
+from pine_mcp_server.tools._helpers import format_error
 
 if TYPE_CHECKING:
     from fastmcp import FastMCP
@@ -33,10 +33,8 @@ def register_attachment_tools(mcp: FastMCP, pine: PineClient) -> None:
             })
         except FileNotFoundError:
             return json.dumps({"success": False, "error": "file_not_found", "message": f"File not found: {file_path}"})
-        except PineAIError as e:
-            return json.dumps({"success": False, "error": e.code, "message": str(e)})
         except Exception as e:
-            return json.dumps({"success": False, "error": "unexpected_error", "message": str(e)})
+            return format_error(e)
 
     @mcp.tool
     async def pine_delete_attachment(attachment_id: str) -> str:
@@ -48,7 +46,5 @@ def register_attachment_tools(mcp: FastMCP, pine: PineClient) -> None:
         try:
             await pine.client.sessions.delete_attachment(attachment_id)
             return json.dumps({"success": True, "message": f"Attachment {attachment_id} deleted."})
-        except PineAIError as e:
-            return json.dumps({"success": False, "error": e.code, "message": str(e)})
         except Exception as e:
-            return json.dumps({"success": False, "error": "unexpected_error", "message": str(e)})
+            return format_error(e)

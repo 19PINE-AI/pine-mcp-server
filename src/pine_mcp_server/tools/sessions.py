@@ -6,7 +6,8 @@ import json
 from typing import TYPE_CHECKING, Optional
 
 from pine_assistant import AsyncPineAI
-from pine_assistant.errors import PineAIError
+
+from pine_mcp_server.tools._helpers import format_error
 
 if TYPE_CHECKING:
     from fastmcp import FastMCP
@@ -31,10 +32,8 @@ def register_session_tools(mcp: FastMCP, pine: PineClient) -> None:
                 "state": result.get("state", ""),
                 "web_url": AsyncPineAI.session_url(session_id),
             })
-        except PineAIError as e:
-            return json.dumps({"success": False, "error": e.code, "message": str(e)})
         except Exception as e:
-            return json.dumps({"success": False, "error": "unexpected_error", "message": str(e)})
+            return format_error(e)
 
     @mcp.tool
     async def pine_session_list(
@@ -61,10 +60,8 @@ def register_session_tools(mcp: FastMCP, pine: PineClient) -> None:
                 st = s.get("state", "?")
                 lines.append(f"- [{st}] {title} (id: {sid})")
             return "\n".join(lines)
-        except PineAIError as e:
-            return json.dumps({"success": False, "error": e.code, "message": str(e)})
         except Exception as e:
-            return json.dumps({"success": False, "error": "unexpected_error", "message": str(e)})
+            return format_error(e)
 
     @mcp.tool
     async def pine_session_get(session_id: str) -> str:
@@ -72,10 +69,8 @@ def register_session_tools(mcp: FastMCP, pine: PineClient) -> None:
         try:
             result = await pine.client.sessions.get(session_id)
             return json.dumps(result, default=str)
-        except PineAIError as e:
-            return json.dumps({"success": False, "error": e.code, "message": str(e)})
         except Exception as e:
-            return json.dumps({"success": False, "error": "unexpected_error", "message": str(e)})
+            return format_error(e)
 
     @mcp.tool
     async def pine_session_delete(session_id: str, force_delete: bool = False) -> str:
@@ -88,10 +83,8 @@ def register_session_tools(mcp: FastMCP, pine: PineClient) -> None:
         try:
             await pine.client.sessions.delete(session_id, force_delete=force_delete)
             return json.dumps({"success": True, "message": f"Session {session_id} deleted."})
-        except PineAIError as e:
-            return json.dumps({"success": False, "error": e.code, "message": str(e)})
         except Exception as e:
-            return json.dumps({"success": False, "error": "unexpected_error", "message": str(e)})
+            return format_error(e)
 
     @mcp.tool
     async def pine_session_url(session_id: str) -> str:

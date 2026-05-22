@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from typing import TYPE_CHECKING, Any, Optional
 
-from pine_assistant.errors import PineAIError
+from pine_mcp_server.tools._helpers import format_error
 
 if TYPE_CHECKING:
     from fastmcp import FastMCP
@@ -38,10 +38,8 @@ def register_message_tools(mcp: FastMCP, pine: PineClient) -> None:
                 "success": True,
                 "message": "Message sent. Use pine_get_history later to see Pine's response.",
             })
-        except PineAIError as e:
-            return json.dumps({"success": False, "error": e.code, "message": str(e)})
         except Exception as e:
-            return json.dumps({"success": False, "error": "unexpected_error", "message": str(e)})
+            return format_error(e)
 
     @mcp.tool
     async def pine_send_form_response(
@@ -66,10 +64,8 @@ def register_message_tools(mcp: FastMCP, pine: PineClient) -> None:
                 "success": True,
                 "message": "Form submitted. Use pine_get_history to see what happens next.",
             })
-        except PineAIError as e:
-            return json.dumps({"success": False, "error": e.code, "message": str(e)})
         except Exception as e:
-            return json.dumps({"success": False, "error": "unexpected_error", "message": str(e)})
+            return format_error(e)
 
     @mcp.tool
     async def pine_send_auth_confirmation(
@@ -94,10 +90,8 @@ def register_message_tools(mcp: FastMCP, pine: PineClient) -> None:
                 "success": True,
                 "message": "Auth confirmation sent. Use pine_get_history to see what happens next.",
             })
-        except PineAIError as e:
-            return json.dumps({"success": False, "error": e.code, "message": str(e)})
         except Exception as e:
-            return json.dumps({"success": False, "error": "unexpected_error", "message": str(e)})
+            return format_error(e)
 
     @mcp.tool
     async def pine_send_location_response(
@@ -121,10 +115,8 @@ def register_message_tools(mcp: FastMCP, pine: PineClient) -> None:
                 "success": True,
                 "message": "Location sent. Use pine_get_history to see what happens next.",
             })
-        except PineAIError as e:
-            return json.dumps({"success": False, "error": e.code, "message": str(e)})
         except Exception as e:
-            return json.dumps({"success": False, "error": "unexpected_error", "message": str(e)})
+            return format_error(e)
 
     @mcp.tool
     async def pine_send_location_selection(
@@ -146,7 +138,5 @@ def register_message_tools(mcp: FastMCP, pine: PineClient) -> None:
                 "success": True,
                 "message": "Location selection sent. Use pine_get_history to see what happens next.",
             })
-        except PineAIError as e:
-            return json.dumps({"success": False, "error": e.code, "message": str(e)})
         except Exception as e:
-            return json.dumps({"success": False, "error": "unexpected_error", "message": str(e)})
+            return format_error(e)

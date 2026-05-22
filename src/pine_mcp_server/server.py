@@ -196,6 +196,22 @@ Only relay questions that need answers, payment info, and results.
 mcp = FastMCP("Pine Assistant", instructions=_INSTRUCTIONS)
 
 
+def _parse_transports(raw: Optional[str]) -> list[str]:
+    """Parse PINE_TRANSPORTS env value into a list for python-socketio.
+
+    Default is ["websocket", "polling"]. The SDK historically defaulted to
+    ["websocket"] only, which fails when the MCP subprocess runs behind a
+    proxy/firewall that blocks raw WebSocket upgrades (a common failure mode
+    of `uvx pine-mcp-server` from Claude Desktop / Cursor). Including polling
+    as a fallback lets the HTTP long-polling transport succeed in those
+    environments, with opportunistic upgrade to WebSocket when possible.
+    """
+    if not raw:
+        return ["websocket", "polling"]
+    parts = [p.strip() for p in raw.split(",") if p.strip()]
+    return parts or ["websocket", "polling"]
+
+
 class PineClient:
     """Manages a single AsyncPineAI instance with lazy Socket.IO connection."""
 
@@ -208,6 +224,7 @@ class PineClient:
         # interactive shell that issued the token. Honor PINE_DEVICE_ID so
         # the device identity stays stable across restarts.
         self._device_id: Optional[str] = os.environ.get("PINE_DEVICE_ID")
+        self._transports: list[str] = _parse_transports(os.environ.get("PINE_TRANSPORTS"))
         self._client: Optional[AsyncPineAI] = None
 
     def _ensure_client(self) -> AsyncPineAI:
@@ -217,6 +234,7 @@ class PineClient:
                 user_id=self._user_id,
                 base_url=self._base_url,
                 device_id=self._device_id,
+                transports=self._transports,
             )
         return self._client
 
