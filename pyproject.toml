@@ -25,6 +25,7 @@ classifiers = [
 dependencies = [
     "fastmcp>=2.0.0,<3",
     "pine-assistant>=0.3.2",
+    "aiohttp>=3.8",
 ]
 
 [project.optional-dependencies]
