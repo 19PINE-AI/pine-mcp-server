@@ -4,6 +4,9 @@ A local [MCP](https://modelcontextprotocol.io) server that lets any LLM agent ma
 
 Built on the [`pine-assistant`](https://pypi.org/project/pine-assistant/) Python SDK.
 
+> This README documents the published local stdio server. A hosted integration is
+> planned but is not available yet; see [Planned hosted integration](#planned-hosted-integration).
+
 ## Installation
 
 ```bash
@@ -144,6 +147,25 @@ There is no real-time streaming. The agent periodically loads the conversation h
 | `PINE_DEVICE_ID` | No | Stable device identifier. Recommended when the server runs as a subprocess (Claude Desktop, Cursor) — otherwise a fresh random ID is generated on each launch if `~/.pine/device_id` is unwritable. |
 
 \* Not required if you authenticate at runtime using the auth tools.
+
+## Planned hosted integration
+
+We are working toward a hosted Pine MCP connection with client plugins and shared
+skills. Users will connect over HTTPS and authorize their Pine account through a
+browser, without running the Pine Python server locally. The integration will use
+existing Pine accounts and credits.
+
+The initial release will focus on phone tasks, including necessary research and
+preparation. Assistants will be able to follow up on the same Pine session and
+retrieve progress and results after reconnecting. Payments and account connections
+may require visiting Pine. Client waiting behavior and supported interactions will
+be documented for each validated release.
+
+This repository will distribute plugin configurations, skills, and usage
+documentation. Hosted service development is maintained separately. Installation
+instructions, supported client versions, and migration steps will be published
+when the integration is ready. The current `uvx` command runs the local server;
+it does not connect to the planned hosted integration.
 
 ## Development
 
