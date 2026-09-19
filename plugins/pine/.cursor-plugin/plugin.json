@@ -1,0 +1,18 @@
+{
+  "name": "pine",
+  "description": "Pine AI phone tasks and call preparation through the Pine MCP service.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Pine AI"
+  },
+  "homepage": "https://pine.im",
+  "repository": "https://github.com/19PINE-AI/pine-mcp-server",
+  "license": "MIT",
+  "keywords": [
+    "pine",
+    "task-assistance",
+    "mcp"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json"
+}

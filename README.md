@@ -19,6 +19,76 @@ Or run directly with `uvx` (no install needed):
 uvx pine-mcp-server
 ```
 
+## Client plugins (preview)
+
+This repository also ships a shared Pine plugin package for Codex and Claude
+Code at [`plugins/pine`](plugins/pine), for phone tasks and call preparation.
+Its remote MCP configuration uses
+`https://mcp.pine.im/mcp`.
+
+The hosted endpoint is planned and is not deployed yet. The plugin is a preview
+package for validating installation and client configuration; it is not a
+working production integration. Continue to use the local stdio server below
+until a hosted release is announced.
+
+The package includes a Cursor plugin descriptor, but Cursor installation and
+runtime behavior have not been tested.
+
+After this package is merged to `main` and the hosted endpoint is available,
+install the marketplace and plugin with your client:
+
+**Codex**
+
+```bash
+codex plugin marketplace add 19PINE-AI/pine-mcp-server --ref main
+codex plugin add pine@pine
+```
+
+**Claude Code**
+
+```bash
+claude plugin marketplace add 19PINE-AI/pine-mcp-server
+claude plugin install pine@pine
+```
+
+Open the client's MCP connection controls and complete Pine's browser sign-in
+when prompted. An existing manually configured Pine connection may have separate
+authorization from the plugin connection. Do not copy access tokens into the
+plugin files. After installation, start a new conversation and use `$pine` in
+Codex or `/pine:pine` in Claude Code to load the shared phone-task guidance.
+
+Local package installation and skill loading have been checked with Codex CLI
+0.154.0 and Claude Code 2.1.277. Hosted browser authorization and production
+operation remain pending; installation alone does not establish a working account
+connection.
+
+### Maintainer endpoint override
+
+To test a non-production endpoint, work from a local clone and change only the
+copied plugin configuration. This does not change the published configuration:
+
+```bash
+git clone https://github.com/19PINE-AI/pine-mcp-server.git pine-mcp-server-preview
+cd pine-mcp-server-preview
+```
+
+Open `plugins/pine/.mcp.json` in an editor and replace
+`https://mcp.pine.im/mcp` with the endpoint under test.
+
+Claude Code can load that copied package directly:
+
+```bash
+claude --plugin-dir plugins/pine
+```
+
+For Codex, add the copied repository as a local marketplace, then install the
+plugin from it:
+
+```bash
+codex plugin marketplace add .
+codex plugin add pine@pine
+```
+
 ## Quick Start
 
 ### 1. Get your Pine AI credentials
@@ -161,10 +231,10 @@ retrieve progress and results after reconnecting. Payments and account connectio
 may require visiting Pine. Client waiting behavior and supported interactions will
 be documented for each validated release.
 
-This repository will distribute plugin configurations, skills, and usage
-documentation. Hosted service development is maintained separately. Installation
-instructions, supported client versions, and migration steps will be published
-when the integration is ready. The current `uvx` command runs the local server;
+This repository distributes the preview plugin configurations and shared skill
+described above. Hosted service development is maintained separately. Production
+availability and migration steps will be published when the integration is ready.
+The current `uvx` command runs the local server;
 it does not connect to the planned hosted integration.
 
 ## Development

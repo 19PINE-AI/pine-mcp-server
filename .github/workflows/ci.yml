@@ -8,6 +8,55 @@ on:
   workflow_call:
 
 jobs:
+  plugin-manifests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Parse plugin and marketplace manifests
+        run: |
+          python -m json.tool .agents/plugins/marketplace.json > /dev/null
+          python -m json.tool .claude-plugin/marketplace.json > /dev/null
+          python -m json.tool plugins/pine/.codex-plugin/plugin.json > /dev/null
+          python -m json.tool plugins/pine/.claude-plugin/plugin.json > /dev/null
+          python -m json.tool plugins/pine/.cursor-plugin/plugin.json > /dev/null
+          python -m json.tool plugins/pine/.mcp.json > /dev/null
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          root = Path(".")
+          plugin_root = root / "plugins" / "pine"
+          assert (plugin_root / "skills" / "pine" / "SKILL.md").is_file()
+
+          for marketplace_path in (
+              root / ".agents" / "plugins" / "marketplace.json",
+              root / ".claude-plugin" / "marketplace.json",
+          ):
+              marketplace = json.loads(marketplace_path.read_text())
+              for entry in marketplace["plugins"]:
+                  source = entry["source"]
+                  if isinstance(source, dict):
+                      source = source["path"]
+                  assert source.startswith("./")
+                  assert (root / source[2:]).is_dir()
+
+          for manifest_path in (
+              plugin_root / ".codex-plugin" / "plugin.json",
+              plugin_root / ".claude-plugin" / "plugin.json",
+              plugin_root / ".cursor-plugin" / "plugin.json",
+          ):
+              manifest = json.loads(manifest_path.read_text())
+              mcp_config = manifest["mcpServers"]
+              assert isinstance(mcp_config, str)
+              assert (plugin_root / mcp_config).is_file()
+              skills_path = manifest.get("skills")
+              if skills_path is not None:
+                  assert isinstance(skills_path, str)
+                  assert (plugin_root / skills_path).is_dir()
+          PY
+
   build:
     runs-on: ubuntu-latest
 

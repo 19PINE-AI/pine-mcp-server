@@ -1,0 +1,14 @@
+{
+  "name": "pine",
+  "owner": {
+    "name": "Pine AI",
+    "url": "https://pine.im"
+  },
+  "plugins": [
+    {
+      "name": "pine",
+      "source": "./plugins/pine",
+      "description": "Pine AI phone tasks and call preparation through the Pine MCP service."
+    }
+  ]
+}

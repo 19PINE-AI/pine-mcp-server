@@ -1,0 +1,33 @@
+{
+  "name": "pine",
+  "version": "0.1.0",
+  "description": "Pine AI phone tasks and call preparation through the Pine MCP service.",
+  "author": {
+    "name": "Pine AI",
+    "url": "https://pine.im"
+  },
+  "homepage": "https://pine.im",
+  "repository": "https://github.com/19PINE-AI/pine-mcp-server",
+  "license": "MIT",
+  "keywords": [
+    "pine",
+    "task-assistance",
+    "mcp"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "Pine",
+    "shortDescription": "Prepare and manage phone tasks through Pine AI.",
+    "longDescription": "Connect Codex to Pine AI for call preparation and phone tasks through the Pine MCP service.",
+    "developerName": "Pine AI",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive"
+    ],
+    "websiteURL": "https://pine.im",
+    "defaultPrompt": [
+      "Use Pine to prepare or manage a phone task."
+    ]
+  }
+}
