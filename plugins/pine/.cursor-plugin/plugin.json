@@ -1,6 +1,6 @@
 {
   "name": "pine",
-  "description": "Pine AI phone tasks and call preparation through the Pine MCP service.",
+  "description": "Pine Assistant for real-world tasks. This integration currently starts phone tasks with necessary search and preparation, and supports following up on existing Pine tasks.",
   "version": "0.1.0",
   "author": {
     "name": "Pine AI"

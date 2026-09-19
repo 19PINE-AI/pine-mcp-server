@@ -1,7 +1,7 @@
 {
   "name": "pine",
   "version": "0.1.0",
-  "description": "Pine AI phone tasks and call preparation through the Pine MCP service.",
+  "description": "Pine Assistant for real-world tasks. This integration currently starts phone tasks with necessary search and preparation, and supports following up on existing Pine tasks.",
   "author": {
     "name": "Pine AI",
     "url": "https://pine.im"
@@ -17,9 +17,9 @@
   "skills": "./skills/",
   "mcpServers": "./.mcp.json",
   "interface": {
-    "displayName": "Pine",
-    "shortDescription": "Prepare and manage phone tasks through Pine AI.",
-    "longDescription": "Connect Codex to Pine AI for call preparation and phone tasks through the Pine MCP service.",
+    "displayName": "Pine Assistant",
+    "shortDescription": "Start phone tasks and follow up with Pine Assistant.",
+    "longDescription": "Pine Assistant for real-world tasks. This integration currently starts phone tasks with necessary search and preparation, and supports following up on existing Pine tasks.",
     "developerName": "Pine AI",
     "category": "Productivity",
     "capabilities": [
@@ -27,7 +27,7 @@
     ],
     "websiteURL": "https://pine.im",
     "defaultPrompt": [
-      "Use Pine to prepare or manage a phone task."
+      "Use Pine Assistant to help with a task."
     ]
   }
 }

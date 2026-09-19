@@ -21,8 +21,10 @@ uvx pine-mcp-server
 
 ## Client plugins (preview)
 
-This repository also ships a shared Pine plugin package for Codex and Claude
-Code at [`plugins/pine`](plugins/pine), for phone tasks and call preparation.
+This repository also ships a shared Pine Assistant plugin package for Codex and Claude
+Code at [`plugins/pine`](plugins/pine). Pine is a general-purpose assistant;
+this plugin release supports starting phone tasks only, including necessary
+search and preparation. Existing Pine tasks can still be queried, answered, or ended.
 Its remote MCP configuration uses
 `https://mcp.pine.im/mcp`.
 
@@ -61,7 +63,9 @@ Open the client's MCP connection controls and complete Pine's browser sign-in
 when prompted. An existing manually configured Pine connection may have separate
 authorization from the plugin connection. Do not copy access tokens into the
 plugin files. After installation, start a new conversation and use `$pine` in
-Codex or `/pine:pine` in Claude Code to load the shared phone-task guidance.
+Codex or `/pine:pine` in Claude Code to load the shared Pine Assistant guidance. The skill keeps general task rules
+in `SKILL.md` and loads `references/phone-tasks.md` for phone-specific guidance.
+Plugin and skill identifiers remain `pine`, and tool names retain `pine_*`.
 
 Local package installation and skill loading have been checked with Codex CLI
 0.154.0 and Claude Code 2.1.277. Hosted browser authorization and production
