@@ -1,13 +1,13 @@
 ---
 name: pine
-description: Delegate phone-first real-world tasks to Pine, including calling a known business or finding a nearby service to call. Use when the user asks Pine to handle a call or to check on an existing Pine task.
+description: Delegate phone-first real-world tasks to Pine, including calling a known business or finding a nearby service to call. Use when the user asks Pine to handle a call, check an existing Pine task, or end it.
 ---
 
 # Pine phone tasks
 
 Use Pine to carry out the user's phone task. A clear request is authorization: do not ask a separate “start?” question. Gather only information that is necessary to act. For a nearby business, ask for a location when it is not already known; Pine can research and prepare when the user has not supplied a number.
 
-Use the currently discovered Pine tools by their semantic purpose; clients can namespace their names differently. The current service provides capabilities to create, list, and get sessions; send a message; read history and outcomes; and submit a form response. It does not provide a task start or stop capability.
+Use the currently discovered Pine tools by their semantic purpose; clients can namespace their names differently. The current service provides capabilities to create, list, and get sessions; send a message; read history and outcomes; submit a form response; and end a task (`pine_end_task`). It does not require a separate task-start call.
 
 ## Start or continue work
 
@@ -30,6 +30,14 @@ For an ordinary Pine question, collect the user's answer in this conversation an
 When history contains a form, submit it structurally when possible. Use that form's `message_id` and an `answers` map keyed by its exact field names; follow its visible required fields and allowed choices. The form-response tool preserves the original form association, so do not invent IDs, request metadata, or alternate field names. Its receipt still does not mean the task is finished.
 
 If Pine requests payment, account connection, a verified phone-number binding, or another web intervention, give the user the returned Pine task link and have them complete it there. For a natural-language web-action request without an action card or task link, use the session link. Only direct a `phone_number` connector to verification when its latest event requires action and is not connected; a number in chat or a form response does not bind the account. After the user finishes the web action, query the original session again; do not resend the task instruction or create a new session. Use Pine's browser authorization with the user's existing account and credits; never ask for Pine login tokens, Pine API keys, or manually supplied Pine login credentials.
+
+## End a task
+
+When the user asks to end or stop a Pine task, identify the matching session and call `pine_end_task` with its `session_id`. A clear request is sufficient; clarify only when the target is ambiguous. Pine decides whether that task can be ended. If it rejects the request, explain the returned reason rather than creating a replacement task or trying another execution path.
+
+Report the returned state faithfully: a user-ended task is not proof its objective succeeded, and the response does not prove an ongoing call has already disconnected. Do not end other tasks merely to free a task slot unless the user has authorized ending those tasks.
+
+If ending the task times out or returns an unknown result, query the same session and its history before deciding what to do next. The state may have changed before notification to the agent failed; do not blindly repeat the write or claim that downstream execution has stopped.
 
 ## Uncertain writes
 

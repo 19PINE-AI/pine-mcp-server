@@ -34,6 +34,12 @@ until a hosted release is announced.
 The package includes a Cursor plugin descriptor, but Cursor installation and
 runtime behavior have not been tested.
 
+The hosted preview includes `pine_end_task(session_id)` for user-requested
+task ending, subject to Pine's eligibility checks. The shared skill explains
+how to select the task and handle an uncertain result. Ending a task does not
+establish that its objective succeeded or that an ongoing call has disconnected.
+The published stdio tool list below describes the existing local server.
+
 After this package is merged to `main` and the hosted endpoint is available,
 install the marketplace and plugin with your client:
 
