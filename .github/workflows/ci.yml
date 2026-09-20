@@ -14,50 +14,106 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Parse plugin and marketplace manifests
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Validate Claude plugin and marketplace
         run: |
-          python -m json.tool .agents/plugins/marketplace.json > /dev/null
-          python -m json.tool .claude-plugin/marketplace.json > /dev/null
-          python -m json.tool plugins/pine/.codex-plugin/plugin.json > /dev/null
-          python -m json.tool plugins/pine/.claude-plugin/plugin.json > /dev/null
-          python -m json.tool plugins/pine/.cursor-plugin/plugin.json > /dev/null
-          python -m json.tool plugins/pine/.mcp.json > /dev/null
+          npx --yes @anthropic-ai/claude-code@2.1.277 plugin validate --strict plugins/pine
+          npx --yes @anthropic-ai/claude-code@2.1.277 plugin validate --strict .claude-plugin/marketplace.json
+
+      - name: Validate plugin manifests and referenced files
+        run: |
           python - <<'PY'
           import json
+          import re
           from pathlib import Path
+          from urllib.parse import urlparse
 
           root = Path(".")
           plugin_root = root / "plugins" / "pine"
-          assert (plugin_root / "skills" / "pine" / "SKILL.md").is_file()
 
-          for marketplace_path in (
+          def load_json(path):
+              with path.open() as file:
+                  return json.load(file)
+
+          def local_path(path, base, expected_type):
+              assert isinstance(path, str) and path.startswith("./"), path
+              resolved = (base / path).resolve()
+              assert resolved.is_relative_to(base.resolve()), path
+              assert getattr(resolved, f"is_{expected_type}")(), path
+              return resolved
+
+          marketplace_paths = (
               root / ".agents" / "plugins" / "marketplace.json",
               root / ".claude-plugin" / "marketplace.json",
-          ):
-              marketplace = json.loads(marketplace_path.read_text())
-              for entry in marketplace["plugins"]:
-                  source = entry["source"]
-                  if isinstance(source, dict):
-                      source = source["path"]
-                  assert source.startswith("./")
-                  assert (root / source[2:]).is_dir()
+              root / ".cursor-plugin" / "marketplace.json",
+          )
+          marketplaces = [load_json(path) for path in marketplace_paths]
+          marketplace_name = marketplaces[0]["name"]
+          assert isinstance(marketplace_name, str) and marketplace_name
+          assert all(marketplace["name"] == marketplace_name for marketplace in marketplaces)
 
-          for manifest_path in (
+          manifest_paths = (
               plugin_root / ".codex-plugin" / "plugin.json",
               plugin_root / ".claude-plugin" / "plugin.json",
               plugin_root / ".cursor-plugin" / "plugin.json",
-          ):
-              manifest = json.loads(manifest_path.read_text())
-              mcp_config = manifest["mcpServers"]
-              assert isinstance(mcp_config, str)
-              assert (plugin_root / mcp_config).is_file()
-              skills_path = manifest.get("skills")
-              if skills_path is not None:
-                  assert isinstance(skills_path, str)
-                  assert (plugin_root / skills_path).is_dir()
+          )
+          manifests = [load_json(path) for path in manifest_paths]
+          plugin_name = manifests[0]["name"]
+          plugin_version = manifests[0]["version"]
+          plugin_description = manifests[0]["description"]
+          assert isinstance(plugin_name, str) and plugin_name
+          assert plugin_name == plugin_root.name
+          assert isinstance(plugin_description, str) and plugin_description
+          assert isinstance(plugin_version, str)
+          assert re.fullmatch(r"(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(?:-[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?", plugin_version)
+          for manifest in manifests:
+              assert manifest["name"] == plugin_name
+              assert manifest["version"] == plugin_version
+              assert manifest["description"] == plugin_description
+
+          for marketplace in marketplaces:
+              matching_plugins = [
+                  entry for entry in marketplace["plugins"] if entry.get("name") == plugin_name
+              ]
+              assert len(matching_plugins) == 1
+              source = matching_plugins[0]["source"]
+              if isinstance(source, dict):
+                  source = source["path"]
+              assert source == "./plugins/pine"
+              local_path(source, root, "dir")
+
+          mcp_path = manifests[0]["mcpServers"]
+          assert all(manifest["mcpServers"] == mcp_path for manifest in manifests)
+          mcp_config = load_json(local_path(mcp_path, plugin_root, "file"))
+          servers = mcp_config["mcpServers"]
+          assert isinstance(servers, dict) and servers
+          for server in servers.values():
+              assert server["type"] == "http"
+              endpoint = urlparse(server["url"])
+              assert endpoint.scheme == "https" and endpoint.netloc
+
+          skill_paths = [manifest["skills"] for manifest in manifests if "skills" in manifest]
+          assert skill_paths and len(set(skill_paths)) == 1
+          skills_dir = local_path(skill_paths[0], plugin_root, "dir")
+          assert (skills_dir / plugin_name / "SKILL.md").is_file()
+
+          for manifest in manifests:
+              asset_paths = []
+              if "logo" in manifest:
+                  asset_paths.append(manifest["logo"])
+              interface = manifest.get("interface", {})
+              if isinstance(interface, dict):
+                  asset_paths.extend(interface[key] for key in ("logo", "composerIcon") if key in interface)
+              for asset_path in asset_paths:
+                  local_path(asset_path, plugin_root, "file")
           PY
 
   build:
+    if: ${{ !startsWith(github.ref, 'refs/tags/plugin-v') }}
     runs-on: ubuntu-latest
 
     strategy:

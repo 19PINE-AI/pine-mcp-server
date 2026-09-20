@@ -1,7 +1,7 @@
 {
   "name": "pine",
   "version": "0.1.0",
-  "description": "Pine Assistant for real-world tasks. This integration currently starts phone tasks with necessary search and preparation, and supports following up on existing Pine tasks.",
+  "description": "Bring Pine AI into your agent to handle real-world tasks and follow up on progress and results.",
   "author": {
     "name": "Pine AI",
     "url": "https://pine.im"
@@ -17,9 +17,9 @@
   "skills": "./skills/",
   "mcpServers": "./.mcp.json",
   "interface": {
-    "displayName": "Pine Assistant",
-    "shortDescription": "Start phone tasks and follow up with Pine Assistant.",
-    "longDescription": "Pine Assistant for real-world tasks. This integration currently starts phone tasks with necessary search and preparation, and supports following up on existing Pine tasks.",
+    "displayName": "Pine AI",
+    "shortDescription": "Handle real-world tasks with Pine AI.",
+    "longDescription": "Bring Pine AI into your agent to handle real-world tasks and follow up on progress and results.",
     "developerName": "Pine AI",
     "category": "Productivity",
     "capabilities": [
@@ -27,7 +27,9 @@
     ],
     "websiteURL": "https://pine.im",
     "defaultPrompt": [
-      "Use Pine Assistant to help with a task."
-    ]
+      "Use Pine AI to help with a task."
+    ],
+    "logo": "./assets/pine.svg",
+    "composerIcon": "./assets/pine.svg"
   }
 }

@@ -1,116 +1,147 @@
-# Pine Assistant MCP Server
+# Pine AI MCP
 
-A local [MCP](https://modelcontextprotocol.io) server that lets any LLM agent manage [Pine AI](https://www.19pine.ai) tasks — negotiate bills, cancel subscriptions, resolve disputes, and make phone calls on your behalf.
+[Pine AI](https://pine.im) is a personal assistant for real-world tasks. This
+repository provides the Pine plugin for MCP clients and the earlier local
+Python stdio server.
 
-Built on the [`pine-assistant`](https://pypi.org/project/pine-assistant/) Python SDK.
+> **Availability:** Pine's hosted MCP service is not available in production
+> until Pine announces it. The remote plugin and connection instructions below
+> apply when it is available.
 
-> This README documents the published local stdio server. A hosted integration is
-> planned but is not available yet; see [Planned hosted integration](#planned-hosted-integration).
+## Pine plugin
 
-## Installation
+The `pine` plugin connects a supported client to Pine through a remote MCP
+server and opens browser-based OAuth authorization when the client connects.
+Bring Pine AI into your agent to handle real-world tasks and follow up on
+progress and results. The shared skill guides the agent through the available
+tools and any details or account actions a task needs.
 
-```bash
-pip install pine-mcp-server
-```
+### Install and authorize
 
-Or run directly with `uvx` (no install needed):
+Ask your agent to set up Pine:
 
-```bash
-uvx pine-mcp-server
-```
+> Read https://pine.im/features/mcp and help me install Pine.
 
-## Client plugins (preview)
+Or follow the instructions for your client below.
 
-This repository also ships a shared Pine Assistant plugin package for Codex and Claude
-Code at [`plugins/pine`](plugins/pine). Pine is a general-purpose assistant;
-this plugin release supports starting phone tasks only, including necessary
-search and preparation. Existing Pine tasks can still be queried, answered, or ended.
-Its remote MCP configuration uses
-`https://mcp.pine.im/mcp`.
-
-The hosted endpoint is planned and is not deployed yet. The plugin is a preview
-package for validating installation and client configuration; it is not a
-working production integration. Continue to use the local stdio server below
-until a hosted release is announced.
-
-The package includes a Cursor plugin descriptor, but Cursor installation and
-runtime behavior have not been tested.
-
-The hosted preview includes `pine_end_task(session_id)` for user-requested
-task ending, subject to Pine's eligibility checks. The shared skill explains
-how to select the task and handle an uncertain result. Ending a task does not
-establish that its objective succeeded or that an ongoing call has disconnected.
-The published stdio tool list below describes the existing local server.
-
-After this package is merged to `main` and the hosted endpoint is available,
-install the marketplace and plugin with your client:
+Install the `pine` plugin from the `pine-ai` marketplace, then begin a new
+conversation. Connect and complete the Pine browser authorization when your
+client asks.
 
 **Codex**
 
 ```bash
-codex plugin marketplace add 19PINE-AI/pine-mcp-server --ref main
-codex plugin add pine@pine
+codex plugin marketplace add https://github.com/19PINE-AI/pine-mcp-server.git --ref main
+codex plugin add pine@pine-ai
+```
+
+To update it:
+
+```bash
+codex plugin marketplace upgrade pine-ai
+codex plugin add pine@pine-ai
 ```
 
 **Claude Code**
 
 ```bash
-claude plugin marketplace add 19PINE-AI/pine-mcp-server
-claude plugin install pine@pine
+claude plugin marketplace add https://github.com/19PINE-AI/pine-mcp-server.git
+claude plugin install pine@pine-ai
 ```
 
-Open the client's MCP connection controls and complete Pine's browser sign-in
-when prompted. An existing manually configured Pine connection may have separate
-authorization from the plugin connection. Do not copy access tokens into the
-plugin files. After installation, start a new conversation and use `$pine` in
-Codex or `/pine:pine` in Claude Code to load the shared Pine Assistant guidance. The skill keeps general task rules
-in `SKILL.md` and loads `references/phone-tasks.md` for phone-specific guidance.
-Plugin and skill identifiers remain `pine`, and tool names retain `pine_*`.
-
-Local package installation and skill loading have been checked with Codex CLI
-0.154.0 and Claude Code 2.1.277. Hosted browser authorization and production
-operation remain pending; installation alone does not establish a working account
-connection.
-
-### Maintainer endpoint override
-
-To test a non-production endpoint, work from a local clone and change only the
-copied plugin configuration. This does not change the published configuration:
+To update it:
 
 ```bash
-git clone https://github.com/19PINE-AI/pine-mcp-server.git pine-mcp-server-preview
-cd pine-mcp-server-preview
+claude plugin marketplace update pine-ai
+claude plugin update pine@pine-ai
 ```
 
-Open `plugins/pine/.mcp.json` in an editor and replace
-`https://mcp.pine.im/mcp` with the endpoint under test.
-
-Claude Code can load that copied package directly:
+If you installed Pine from the older `pine` marketplace, migrate only that
+installation before adding `pine-ai`:
 
 ```bash
-claude --plugin-dir plugins/pine
+codex plugin remove pine@pine
+codex plugin marketplace remove pine
+codex plugin marketplace add https://github.com/19PINE-AI/pine-mcp-server.git --ref main
+codex plugin add pine@pine-ai
 ```
 
-For Codex, add the copied repository as a local marketplace, then install the
-plugin from it:
+For Claude Code, uninstall `pine@pine` and remove its `pine` marketplace in
+the plugin manager, then add the GitHub marketplace above and install
+`pine@pine-ai`. This migration does not require removing unrelated client
+settings or MCP connections. The renamed plugin may ask you to authorize Pine
+again; do not copy tokens between the old and new configuration.
+
+Use Pine naturally after authorizing, for example:
+
+> Use Pine to contact a nearby bike repair shop and ask about tune-up availability.
+
+Pine keeps working after you leave. Ask your agent for progress or results when
+you return. Complete payment, account connection, or phone verification in Pine
+when the task directs you there.
+
+In Codex, use `$pine` to load the shared guidance. In Claude Code, use
+`/pine:pine`.
+
+### Connect from another MCP client
+
+Add a Streamable HTTP MCP server with this configuration, then use the
+client's Connect or Authorize control to complete OAuth in a browser:
+
+```json
+{
+  "mcpServers": {
+    "pine": {
+      "type": "http",
+      "url": "https://mcp.pine.im/mcp"
+    }
+  }
+}
+```
+
+### Cursor
+
+Cursor supports the Pine plugin and a manual MCP connection.
+
+For a local native plugin install, clone this repository, copy
+`plugins/pine` to `~/.cursor/plugins/local/pine`, and reload Cursor:
 
 ```bash
-codex plugin marketplace add .
-codex plugin add pine@pine
+git clone https://github.com/19PINE-AI/pine-mcp-server.git
+mkdir -p ~/.cursor/plugins/local
+cp -R pine-mcp-server/plugins/pine ~/.cursor/plugins/local/pine
 ```
 
-## Quick Start
+Use **Developer: Reload Window**, then enable Pine in **Customize** and complete
+browser authorization. When updating, replace the existing local `pine` folder
+instead of copying a second `pine` folder inside it. Team administrators can also
+import this repository as a marketplace.
 
-### 1. Get your Pine AI credentials
+For a manual connection, add the Streamable HTTP configuration above in
+Cursor's MCP settings, then use its authorization control.
 
-You need an `access_token` and `user_id` from Pine AI. Either:
+## Legacy local stdio server
 
-- Sign up at [19pine.ai](https://www.19pine.ai) and retrieve your credentials, or
-- Use the built-in auth tools (`pine_auth_request_code` / `pine_auth_verify_code`) to authenticate via email.
+The published `pine-mcp-server` Python package is separate from the plugin
+distribution: `pip` and `uvx` do not install the
+[client plugin](https://github.com/19PINE-AI/pine-mcp-server/tree/main/plugins/pine).
+It runs a local stdio MCP server backed by the
+[`pine-assistant`](https://pypi.org/project/pine-assistant/) SDK.
 
-### 2. Configure your MCP client
+Install it with pip:
 
-**Claude Desktop** — edit `claude_desktop_config.json`:
+```bash
+pip install pine-mcp-server
+```
+
+Or run it without installing:
+
+```bash
+uvx pine-mcp-server
+```
+
+Configure a stdio MCP client with the executable and Pine credentials. For
+example:
 
 ```json
 {
@@ -127,127 +158,88 @@ You need an `access_token` and `user_id` from Pine AI. Either:
 }
 ```
 
-**Cursor** — edit `.cursor/mcp.json`:
+If installed with pip, use `pine-mcp-server` as `command` and omit `args`.
+Alternatively, authenticate with the `pine_auth_request_code` and
+`pine_auth_verify_code` tools. Do not put access tokens in plugin files.
 
-```json
-{
-  "mcpServers": {
-    "pine-assistant": {
-      "command": "uvx",
-      "args": ["pine-mcp-server"],
-      "env": {
-        "PINE_ACCESS_TOKEN": "your-access-token",
-        "PINE_USER_ID": "your-user-id"
-      }
-    }
-  }
-}
-```
-
-If you prefer `pip install`, replace `"command": "uvx"` with `"command": "pine-mcp-server"` and remove the `"args"` field.
-
-### 3. Use it
-
-Ask your LLM agent something like:
-
-> "Use Pine AI to negotiate my Comcast internet bill. My account number is 12345."
-
-The agent will create a session, send your request, and check back for updates.
-
-## How It Works
-
-The server follows a **"load conversation"** model — like refreshing a browser page:
-
-1. **Create a session** — `pine_session_create`
-2. **Send a message** describing the task — `pine_send_message`
-3. **Wait, then check** what Pine replied — `pine_get_history`
-4. **Start the task** when ready — `pine_task_start`
-5. **Check again** for results — `pine_get_history`
-
-There is no real-time streaming. The agent periodically loads the conversation history to see updates, similar to refreshing the Pine web app.
-
-## Available Tools
-
-### Authentication
-
-| Tool | Description |
-|------|-------------|
-| `pine_auth_request_code` | Request a verification code via email |
-| `pine_auth_verify_code` | Verify the code and obtain credentials |
-
-### Sessions
-
-| Tool | Description |
-|------|-------------|
-| `pine_session_create` | Create a new Pine session |
-| `pine_session_list` | List sessions with optional filters |
-| `pine_session_get` | Get details about a session |
-| `pine_session_delete` | Delete a session |
-| `pine_session_url` | Get the web URL to view a session |
-
-### Conversation
-
-| Tool | Description |
-|------|-------------|
-| `pine_get_history` | Load conversation history (the core "refresh" tool) |
-| `pine_send_message` | Send a text message to Pine |
-| `pine_send_form_response` | Submit a form that Pine sent |
-| `pine_send_auth_confirmation` | Submit an OTP/verification code |
-| `pine_send_location_response` | Submit location coordinates |
-| `pine_send_location_selection` | Submit a location selection |
-
-### Tasks
-
-| Tool | Description |
-|------|-------------|
-| `pine_task_start` | Start task execution |
-| `pine_task_stop` | Stop a running task |
-
-### Attachments
-
-| Tool | Description |
-|------|-------------|
-| `pine_upload_attachment` | Upload a local file (bill, screenshot, etc.) |
-| `pine_delete_attachment` | Delete an uploaded attachment |
-
-### Social & Scheduling
-
-| Tool | Description |
-|------|-------------|
-| `pine_social_share` | Share results on social media to earn credits |
-| `pine_update_call_reminder` | Update a scheduled call reminder |
-
-## Environment Variables
+### Environment
 
 | Variable | Required | Description |
-|----------|----------|-------------|
+| --- | --- | --- |
 | `PINE_ACCESS_TOKEN` | Yes* | Pine AI access token |
 | `PINE_USER_ID` | Yes* | Pine AI user ID |
 | `PINE_BASE_URL` | No | Pine AI backend URL (default: `https://www.19pine.ai`) |
-| `PINE_DEVICE_ID` | No | Stable device identifier. Recommended when the server runs as a subprocess (Claude Desktop, Cursor) — otherwise a fresh random ID is generated on each launch if `~/.pine/device_id` is unwritable. |
+| `PINE_DEVICE_ID` | No | Stable device identifier for subprocess clients; otherwise a new ID may be generated when `~/.pine/device_id` is unwritable. |
 
-\* Not required if you authenticate at runtime using the auth tools.
+\* Not required when authenticating at runtime with the auth tools.
 
-## Planned hosted integration
+### Tools
 
-We are working toward a hosted Pine MCP connection with client plugins and shared
-skills. Users will connect over HTTPS and authorize their Pine account through a
-browser, without running the Pine Python server locally. The integration will use
-existing Pine accounts and credits.
+| Area | Tools |
+| --- | --- |
+| Authentication | `pine_auth_request_code`, `pine_auth_verify_code` |
+| Sessions | `pine_session_create`, `pine_session_list`, `pine_session_get`, `pine_session_delete`, `pine_session_url` |
+| Conversation | `pine_get_history`, `pine_send_message`, `pine_send_form_response`, `pine_send_auth_confirmation`, `pine_send_location_response`, `pine_send_location_selection` |
+| Tasks | `pine_task_start`, `pine_task_stop` |
+| Attachments | `pine_upload_attachment`, `pine_delete_attachment` |
+| Social and scheduling | `pine_social_share`, `pine_update_call_reminder` |
 
-The initial release will focus on phone tasks, including necessary research and
-preparation. Assistants will be able to follow up on the same Pine session and
-retrieve progress and results after reconnecting. Payments and account connections
-may require visiting Pine. Client waiting behavior and supported interactions will
-be documented for each validated release.
+The local server follows a load-conversation model: create or select a
+session, send a message, and read history for subsequent questions and
+results. It does not stream real-time updates.
 
-This repository distributes the preview plugin configurations and shared skill
-described above. Hosted service development is maintained separately. Production
-availability and migration steps will be published when the integration is ready.
-The current `uvx` command runs the local server;
-it does not connect to the planned hosted integration.
+## Releases
+
+Plugin releases use immutable `plugin-vX.Y.Z` tags. The Python package uses
+`vX.Y.Z` tags and is published independently to PyPI. Keep all plugin manifest
+versions synchronized before creating a plugin tag. Plugin tags run validation
+without publishing to PyPI. Python tags must match the version in
+`pyproject.toml` before publication.
+
+The installation commands track `main`. Merge and validate a release before
+tagging it, bump plugin versions when changing the package, and never move an
+existing release tag. To pin a plugin release in Codex, add the repository with
+`--ref plugin-vX.Y.Z` instead of `--ref main`. After updating a plugin, start a
+new client conversation (or reload the client) to load its changes.
 
 ## Development
+
+For plugin testing, clone this repository and edit `plugins/pine/.mcp.json` in
+that working copy to point at the endpoint under test. Do not commit a local
+endpoint or credentials. Use separate client configuration directories so the
+local marketplace does not collide with your normal Pine installation.
+
+From the repository root, test Codex:
+
+```bash
+PINE_CODEX_TEST_CONFIG="$(mktemp -d)"
+CODEX_HOME="$PINE_CODEX_TEST_CONFIG" codex plugin marketplace add .
+CODEX_HOME="$PINE_CODEX_TEST_CONFIG" codex plugin add pine@pine-ai
+CODEX_HOME="$PINE_CODEX_TEST_CONFIG" codex
+```
+
+Or Claude Code:
+
+```bash
+PINE_CLAUDE_TEST_CONFIG="$(mktemp -d)"
+CLAUDE_CONFIG_DIR="$PINE_CLAUDE_TEST_CONFIG" claude plugin marketplace add .
+CLAUDE_CONFIG_DIR="$PINE_CLAUDE_TEST_CONFIG" claude plugin install pine@pine-ai
+CLAUDE_CONFIG_DIR="$PINE_CLAUDE_TEST_CONFIG" claude
+```
+
+Keep the same temporary directory while testing. Each isolated client may
+require its own client login and Pine authorization. Remove the temporary
+configuration after testing; do not copy credentials into the repository.
+
+Validate the Claude package and marketplace with:
+
+```bash
+claude plugin validate plugins/pine --strict
+claude plugin validate . --strict
+```
+
+CI also checks cross-client metadata and bundled paths. For the legacy Python
+server's development dependencies:
 
 ```bash
 pip install -e ".[dev]"

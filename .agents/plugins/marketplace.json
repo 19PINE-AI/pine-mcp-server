@@ -1,7 +1,7 @@
 {
-  "name": "pine",
+  "name": "pine-ai",
   "interface": {
-    "displayName": "Pine"
+    "displayName": "Pine AI"
   },
   "plugins": [
     {

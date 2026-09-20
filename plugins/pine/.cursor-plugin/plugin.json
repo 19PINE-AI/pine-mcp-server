@@ -1,6 +1,6 @@
 {
   "name": "pine",
-  "description": "Pine Assistant for real-world tasks. This integration currently starts phone tasks with necessary search and preparation, and supports following up on existing Pine tasks.",
+  "description": "Bring Pine AI into your agent to handle real-world tasks and follow up on progress and results.",
   "version": "0.1.0",
   "author": {
     "name": "Pine AI"
@@ -14,5 +14,6 @@
     "mcp"
   ],
   "skills": "./skills/",
-  "mcpServers": "./.mcp.json"
+  "mcpServers": "./.mcp.json",
+  "logo": "./assets/pine.svg"
 }
