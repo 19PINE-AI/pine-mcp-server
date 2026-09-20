@@ -1,0 +1,16 @@
+{
+  "name": "pine-ai",
+  "owner": {
+    "name": "Pine AI"
+  },
+  "metadata": {
+    "description": "Bring Pine AI into your agent to handle real-world tasks and follow up on progress and results."
+  },
+  "plugins": [
+    {
+      "name": "pine",
+      "source": "./plugins/pine",
+      "description": "Bring Pine AI into your agent to handle real-world tasks and follow up on progress and results."
+    }
+  ]
+}

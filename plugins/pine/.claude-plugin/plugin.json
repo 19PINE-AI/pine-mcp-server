@@ -1,0 +1,22 @@
+{
+  "name": "pine",
+  "displayName": "Pine Assistant",
+  "version": "0.1.0",
+  "description": "Bring Pine AI into your agent to handle real-world tasks and follow up on progress and results.",
+  "author": {
+    "name": "Pine AI",
+    "url": "https://pine.im"
+  },
+  "homepage": "https://pine.im",
+  "repository": "https://github.com/19PINE-AI/pine-mcp-server",
+  "license": "MIT",
+  "keywords": [
+    "pine",
+    "pine-ai",
+    "personal-assistant",
+    "real-world-tasks",
+    "task-automation",
+    "mcp"
+  ],
+  "mcpServers": "./.mcp.json"
+}
