@@ -1,16 +1,12 @@
-# Pine AI MCP
+# Pine Assistant MCP
 
 [Pine AI](https://pine.im) is a personal assistant for real-world tasks. This
-repository provides the Pine plugin for MCP clients and the earlier local
+repository provides the Pine Assistant plugin for MCP clients and the earlier local
 Python stdio server.
 
-> **Availability:** Pine's hosted MCP service is not available in production
-> until Pine announces it. The remote plugin and connection instructions below
-> apply when it is available.
+## Pine Assistant plugin
 
-## Pine plugin
-
-The `pine` plugin connects a supported client to Pine through a remote MCP
+Pine Assistant (`pine`) connects a supported client to Pine through a remote MCP
 server and opens browser-based OAuth authorization when the client connects.
 Bring Pine AI into your agent to handle real-world tasks and follow up on
 progress and results. The shared skill guides the agent through the available
@@ -24,7 +20,7 @@ Ask your agent to set up Pine:
 
 Or follow the instructions for your client below.
 
-Install the `pine` plugin from the `pine-ai` marketplace, then begin a new
+Install **Pine Assistant** (`pine`) from the **Pine AI** (`pine-ai`) marketplace, then begin a new
 conversation. Connect and complete the Pine browser authorization when your
 client asks.
 
@@ -101,7 +97,7 @@ client's Connect or Authorize control to complete OAuth in a browser:
 
 ### Cursor
 
-Cursor supports the Pine plugin and a manual MCP connection.
+Cursor supports the Pine Assistant plugin and a manual MCP connection.
 
 For a local native plugin install, clone this repository, copy
 `plugins/pine` to `~/.cursor/plugins/local/pine`, and reload Cursor:

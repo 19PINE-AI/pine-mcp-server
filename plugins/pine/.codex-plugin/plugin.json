@@ -17,7 +17,7 @@
   "skills": "./skills/",
   "mcpServers": "./.mcp.json",
   "interface": {
-    "displayName": "Pine AI",
+    "displayName": "Pine Assistant",
     "shortDescription": "Handle real-world tasks with Pine AI.",
     "longDescription": "Bring Pine AI into your agent to handle real-world tasks and follow up on progress and results.",
     "developerName": "Pine AI",
