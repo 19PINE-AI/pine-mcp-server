@@ -11,7 +11,10 @@
   "license": "MIT",
   "keywords": [
     "pine",
-    "task-assistance",
+    "pine-ai",
+    "personal-assistant",
+    "real-world-tasks",
+    "task-automation",
     "mcp"
   ],
   "skills": "./skills/",
