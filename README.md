@@ -52,22 +52,6 @@ claude plugin marketplace update pine-ai
 claude plugin update pine@pine-ai
 ```
 
-If you installed Pine from the older `pine` marketplace, migrate only that
-installation before adding `pine-ai`:
-
-```bash
-codex plugin remove pine@pine
-codex plugin marketplace remove pine
-codex plugin marketplace add https://github.com/19PINE-AI/pine-mcp-server.git --ref main
-codex plugin add pine@pine-ai
-```
-
-For Claude Code, uninstall `pine@pine` and remove its `pine` marketplace in
-the plugin manager, then add the GitHub marketplace above and install
-`pine@pine-ai`. This migration does not require removing unrelated client
-settings or MCP connections. The renamed plugin may ask you to authorize Pine
-again; do not copy tokens between the old and new configuration.
-
 Use Pine naturally after authorizing, for example:
 
 > Use Pine to contact a nearby bike repair shop and ask about tune-up availability.
