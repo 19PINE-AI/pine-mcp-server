@@ -100,6 +100,13 @@ import this repository as a marketplace.
 For a manual connection, add the Streamable HTTP configuration above in
 Cursor's MCP settings, then use its authorization control.
 
+## Use Pine from your own agent with a Platform API key
+
+A Pine Platform API partner can use the hosted Pine MCP server from its own
+agent, on behalf of each of its end users. It authenticates with its secret key
+and a `Pine-Managed-User-Id` header instead of browser OAuth, so it does not use
+the plugin. See [Use Pine MCP from your own agent](https://github.com/19PINE-AI/pine-mcp-server/blob/main/docs/platform-api-agents.md).
+
 ## Legacy local stdio server
 
 The published `pine-mcp-server` Python package is separate from the plugin
