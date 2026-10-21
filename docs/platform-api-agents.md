@@ -21,6 +21,11 @@ Get a key from Pine, and create a managed user for each end user. Store the mana
 
 The Pine MCP server is at `https://mcp.pine.im/mcp`.
 
+Pine MCP acts for one managed user and has no tools to manage users or session settings. Do these from your server with the [Python SDK](https://github.com/19PINE-AI/pine-assistant-python/blob/main/docs/sdk-api.md) or the [HTTP API](https://github.com/19PINE-AI/pine-assistant-python/blob/main/docs/http-api.md):
+
+- Change a managed user's email, name, phone or assistant, for example when the user gets a new phone.
+- Choose the caller ID that the calls of a session show.
+
 ## Step 1: connect to Pine MCP for one managed user
 
 Every request to Pine MCP carries two headers:
@@ -96,6 +101,7 @@ Start or continue work
 - For a new task, create one session, then send one clear instruction. Creating a session does not start work; Pine continues after it gets the instruction, and no separate start call exists.
 - Write the instruction with: Goal; Contact, phone number or search criteria; Relevant background and requirements. Carry over every constraint the user gave. For a public business, give its number or enough detail for Pine to find it. For a private contact, use only a number the user gave; never guess one. Ask the user only for details that block progress, and never invent personal facts.
 - A clear task request is the user's authorization; do not ask a separate "start?" question.
+- Pass the user's time zone, an IANA name such as America/New_York, as timezone with every message you send to Pine. If you do not know it, omit it; Pine then reads times such as "tomorrow at 9 am" as UTC.
 
 Follow progress
 - Read the session history for Pine's questions, forms, state changes, replies and task completion. The result is in the task_finished event and Pine's last messages. Outcomes are shareable results; read them when you need them.
@@ -142,7 +148,7 @@ A managed user's task ends by itself when it produces its result. Later work for
 | `pine_session_create` | Creates a session. Does not start work. | |
 | `pine_session_list` | Lists the user's sessions. | Use it to find earlier work. |
 | `pine_session_get` | Reads one session's metadata. | |
-| `pine_send_message` | Sends an instruction or an answer to Pine. Pine may then start work, including phone calls. | Not idempotent. |
+| `pine_send_message` | Sends an instruction or an answer to Pine. Pine may then start work, including phone calls. | Not idempotent. Optional `timezone`: the user's IANA time zone. |
 | `pine_get_history` | Reads messages and events: Pine's replies, questions, forms, state, completion. | Opens a short real-time connection for each call. |
 | `pine_send_form_response` | Answers a form from Pine. | Not idempotent. |
 | `pine_get_outcomes` | Reads the session's shareable results. | |
@@ -181,7 +187,7 @@ Tool errors never contain your key or the upstream response body.
 - [ ] Key stored on the server only, never in prompts or logs.
 - [ ] Pine user ID stored for each end user.
 - [ ] One MCP connection per request, with that user's headers.
-- [ ] Pine guidance in the system prompt, adapted to your product.
+- [ ] Pine guidance in the system prompt, adapted to your product, with the user's time zone.
 - [ ] Pine links not shown to end users.
 - [ ] `session_id` stored, and a background job to follow open sessions.
 - [ ] Tool errors handled by `error.code`.
