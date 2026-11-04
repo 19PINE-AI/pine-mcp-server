@@ -27,7 +27,7 @@ After sending an instruction or answer, read the same session's history for ques
 
 Fetch bounded history pages. Follow the returned cursor (`next_message_id`) through the history tool's `before` argument only while another page is needed, respect the returned `order`, and retain the latest revision of duplicate events.
 
-Pine does not push updates to this client, so you must actively read history to follow progress. After sending a message and after each history read, decide when to check again based on Pine’s latest reply and the task’s expected progress. If timing is uncertain, prefer checking sooner rather than stopping follow-up; avoid tight polling loops. An acknowledgement is not completion. Defer checks for scheduled work, pause for required user input, and stop when the task finishes.
+Pine does not send you updates automatically, so you must actively read history to follow progress. After sending a message and after each history read, decide when to check again based on Pine’s latest reply and the task’s expected progress. If timing is uncertain, prefer checking sooner rather than stopping follow-up; avoid tight polling loops. An acknowledgement is not completion. Defer checks for scheduled work, pause for required user input, and stop when the task finishes.
 
 If the client supports native waiting, use it before another bounded query; do not promise that updates will be delivered after the client exits. A later conversation can recover by listing sessions and reading the chosen session's history/outcomes.
 
