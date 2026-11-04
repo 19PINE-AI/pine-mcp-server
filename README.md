@@ -100,6 +100,10 @@ import this repository as a marketplace.
 For a manual connection, add the Streamable HTTP configuration above in
 Cursor's MCP settings, then use its authorization control.
 
+### Muse
+
+Follow [Install Pine in Muse](plugins/pine/install/muse.md).
+
 ## Use Pine from your own agent with a Platform API key
 
 A Pine Platform API partner can use the hosted Pine MCP server from its own
