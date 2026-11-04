@@ -102,10 +102,7 @@ Cursor's MCP settings, then use its authorization control.
 
 ### Muse
 
-Connect `https://mcp.pine.im/mcp` through a Custom Connector with OAuth scopes
-`mcp:tools offline_access` from the first authorization. Import the official
-[Pine skill](plugins/pine/skills/pine/), including `SKILL.md` and `references/`,
-unchanged; keep any connector-specific setup separate.
+Follow [Install Pine in Muse](plugins/pine/install/muse.md).
 
 ## Use Pine from your own agent with a Platform API key
 
