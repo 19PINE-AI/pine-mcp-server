@@ -27,9 +27,9 @@ After sending an instruction or answer, read the same session's history for ques
 
 Fetch bounded history pages. Follow the returned cursor (`next_message_id`) through the history tool's `before` argument only while another page is needed, respect the returned `order`, and retain the latest revision of duplicate events.
 
-Choose the next read from Pine's expected next action and timing: seconds for a conversational reply (10–30 seconds if unspecified), minutes for a retry or ongoing call, or near the scheduled time for work hours or days away. Reassess after each update; reduce frequency when nothing changes. An acknowledgement such as “I'll get started” is not a stopping point.
+Pine does not push updates to this client, so you must actively read history to follow progress. After sending a message and after each history read, decide when to check again based on Pine’s latest reply and the task’s expected progress. If timing is uncertain, prefer checking sooner rather than stopping follow-up; avoid tight polling loops. An acknowledgement is not completion. Defer checks for scheduled work, pause for required user input, and stop when the task finishes.
 
-Use the client's wait capability between reads. For a long delay, stop foreground polling; arrange a later check only with a supported persistent scheduler and the user's authorization. Otherwise explain that Pine is still working and how to check later; do not promise a notification. Pause when Pine needs the user's answer or web action, resume the same session afterward, and stop when the task ends. If the client cannot keep waiting, say so. A later conversation can recover by listing sessions and reading the chosen session's history/outcomes.
+If the client supports native waiting, use it before another bounded query; do not promise that updates will be delivered after the client exits. A later conversation can recover by listing sessions and reading the chosen session's history/outcomes.
 
 For an ordinary Pine question, collect the user's answer in this conversation and send it to the same session. Keep sensitive form values, especially L2/L3 values, out of unnecessary narration.
 
