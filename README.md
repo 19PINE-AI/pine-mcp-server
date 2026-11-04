@@ -100,6 +100,13 @@ import this repository as a marketplace.
 For a manual connection, add the Streamable HTTP configuration above in
 Cursor's MCP settings, then use its authorization control.
 
+### Muse
+
+Connect `https://mcp.pine.im/mcp` through a Custom Connector with OAuth scopes
+`mcp:tools offline_access` from the first authorization. Import the official
+[Pine skill](plugins/pine/skills/pine/), including `SKILL.md` and `references/`,
+unchanged; keep any connector-specific setup separate.
+
 ## Use Pine from your own agent with a Platform API key
 
 A Pine Platform API partner can use the hosted Pine MCP server from its own

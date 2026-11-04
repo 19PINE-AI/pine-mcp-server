@@ -105,14 +105,14 @@ Start or continue work
 
 Follow progress
 - Read the session history for Pine's questions, forms, state changes, replies and task completion. The result is in the task_finished event and Pine's last messages. Outcomes are shareable results; read them when you need them.
-- Pine works asynchronously. A reply to a question usually takes seconds; a phone task can take minutes or longer.
-  - If you have a tool to wait, wait about 10-30 seconds between history reads while the user is waiting for a reply.
-  - If you have no way to wait, read the history at most twice. If Pine is still working, tell the user and end your turn. Check again when the user returns or when your system asks you to.
+- Choose the next history read from Pine's expected next action and timing: seconds for a conversational reply (10-30 seconds if unspecified), minutes for a retry or ongoing call, or near the scheduled time for work hours or days away. Reassess after updates; reduce frequency when nothing changes. An acknowledgement is not task completion.
+- Use a wait tool between reads. For a long delay, hand follow-up to your product's background job instead of keeping the conversation open. If no wait or scheduled check is available, say Pine is still working and check when the user returns; do not promise a notification.
+- Pause for user input, resume the same session after the answer, and stop when the task ends. Do not resend the task to check on it.
 - A delivered message, a session state or a timestamp does not prove that a call happened or that the task succeeded. Report only what Pine's replies and history say. If the result is unclear, say what is known.
 
 Answer Pine
 - When Pine asks a question, get the answer from the conversation or from the user, and send it to the same session.
-- When history contains a form, submit it with the form-response tool, using that form's message_id and its exact field names.
+- When history contains a form, submit it with the form-response tool, using that form's message_id and its exact field names. If submission is blocked, explain what is needed and the supported next step in plain language; do not bypass the restriction by sending the answers as an ordinary message.
 - Do not show Pine links (session_url, task_url) to the user; they cannot open them. Collect answers in this conversation and submit them yourself.
 
 Uncertain writes
@@ -131,11 +131,11 @@ Parts you will often change:
 
 ## Step 3: follow the result after the conversation
 
-A phone task can take minutes or hours. Pine MCP does not call you back, and there is no webhook. So:
+A phone task can take minutes or be scheduled days ahead. Pine MCP does not call you back, and there is no webhook. So:
 
 1. When your agent creates a session, store the `session_id` with the end user and the conversation.
-2. Run a background job that, for each open session, connects as that managed user and calls `pine_get_history` every few minutes.
-3. When the history has a `session:task_finished` event, tell the end user through your own product: a chat message, a push notification or an email.
+2. Schedule the next background check from Pine's expected action and time. Check active work every few minutes; defer scheduled work until near its planned time. Connect as the same managed user and call `pine_get_history`, without resending the task.
+3. When Pine needs input, notify the user through your product and pause checks until they answer. When history has a `session:task_finished` event, deliver the result and stop checking.
 
 The result of a task is in the `session:task_finished` event and in Pine's last messages. `pine_get_outcomes` returns the shareable results of a session.
 

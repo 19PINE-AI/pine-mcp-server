@@ -23,15 +23,19 @@ Do not claim an external action happened or the task is complete from a session 
 
 ## Read updates and respond
 
-Read the same session's history for questions, forms, state, task-finished content, connection or payment requests, and Agent replies. Read outcomes as well when they are relevant. Present Pine's actual reply and result facts faithfully; explain them if useful, but do not manufacture a summary, outcome, or terminal status.
+After sending an instruction or answer, read the same session's history for questions, forms, state, task-finished content, connection or payment requests, and Agent replies. Read outcomes as well when they are relevant. Present Pine's actual reply and result facts faithfully; explain them if useful, but do not manufacture a summary, outcome, or terminal status.
 
-Fetch bounded history pages. Follow the returned cursor (`next_message_id`) through the history tool's `before` argument only while another page is needed, respect the returned `order`, and retain the latest revision of duplicate events. Do not poll in a tight loop. If the client supports native waiting, use it before another bounded query; do not promise that updates will be delivered after the client exits. A later conversation can recover by listing sessions and reading the chosen session's history/outcomes.
+Fetch bounded history pages. Follow the returned cursor (`next_message_id`) through the history tool's `before` argument only while another page is needed, respect the returned `order`, and retain the latest revision of duplicate events.
+
+Choose the next read from Pine's expected next action and timing: seconds for a conversational reply (10–30 seconds if unspecified), minutes for a retry or ongoing call, or near the scheduled time for work hours or days away. Reassess after each update; reduce frequency when nothing changes. An acknowledgement such as “I'll get started” is not a stopping point.
+
+Use the client's wait capability between reads. For a long delay, stop foreground polling; arrange a later check only with a supported persistent scheduler and the user's authorization. Otherwise explain that Pine is still working and how to check later; do not promise a notification. Pause when Pine needs the user's answer or web action, resume the same session afterward, and stop when the task ends. If the client cannot keep waiting, say so. A later conversation can recover by listing sessions and reading the chosen session's history/outcomes.
 
 For an ordinary Pine question, collect the user's answer in this conversation and send it to the same session. Keep sensitive form values, especially L2/L3 values, out of unnecessary narration.
 
 ## Forms and web actions
 
-When history contains a form, submit it structurally when possible. Use that form's `message_id` and an `answers` map keyed by its exact field names; follow its visible required fields and allowed choices. The form-response tool preserves the original form association, so do not invent IDs, request metadata, or alternate field names. Its receipt still does not mean the task is finished.
+When history contains a form, submit it structurally when possible. Use that form's `message_id` and an `answers` map keyed by its exact field names; follow its visible required fields and allowed choices. The form-response tool preserves the original form association, so do not invent IDs, request metadata, or alternate field names. Its receipt still does not mean the task is finished. If the client blocks submission, direct the user to the Pine task page; do not bypass the restriction by sending the answers as an ordinary message. Explain what Pine needs and the next step in plain language, without security jargon unless the user asks.
 
 If Pine requests payment, account connection, a verified phone-number binding, or another web intervention, give the user the returned Pine task link and have them complete it there. For a natural-language web-action request without an action card or task link, use the session link. After the user finishes the web action, query the original session again; do not resend the task instruction or create a new session. Use Pine's browser authorization with the user's existing account and credits; never ask for Pine login tokens, Pine API keys, or manually supplied Pine login credentials.
 
