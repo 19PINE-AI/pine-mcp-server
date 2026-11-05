@@ -102,7 +102,7 @@ Cursor's MCP settings, then use its authorization control.
 
 ### Muse
 
-Follow [Install Pine in Muse](plugins/pine/install/muse.md).
+Follow [Install Pine in Muse](install/muse.md).
 
 ## Use Pine from your own agent with a Platform API key
 
