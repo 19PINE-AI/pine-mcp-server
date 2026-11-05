@@ -2,7 +2,7 @@
   "name": "pine",
   "displayName": "Pine Assistant",
   "description": "Bring Pine AI into your agent to handle real-world tasks and follow up on progress and results.",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "author": {
     "name": "Pine AI"
   },
