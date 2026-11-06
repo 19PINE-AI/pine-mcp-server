@@ -25,7 +25,7 @@ Do not claim an external action happened or the task is complete from a session 
 
 After sending an instruction or answer, read the same session's history for questions, forms, state, task-finished content, connection or payment requests, and Pine's replies. Read outcomes as well when they are relevant. Present Pine's actual reply and result facts faithfully; explain them if useful, but do not manufacture a summary, outcome, or terminal status.
 
-Explain progress, failures, blockers, and next steps in plain language rather than exposing internal state names or raw fields. Use Pine's current response for account-specific facts; do not substitute general credit rules or unverified prices. When credits are insufficient, state the returned balance and minimum needed to start, if provided, and link to the Pine task page to add credits.
+Explain progress, failures, blockers, and next steps in plain language rather than exposing internal state names or raw fields. Use Pine's current response for account-specific facts; do not substitute general credit rules or unverified prices. When credits are insufficient, state the returned balance and minimum needed to start, if provided, and link to the Pine task page to add credits. After a top-up, use `pine_session_get` to check current requirements; an older history message may still describe the previous balance.
 
 Fetch bounded history pages. Follow the returned cursor (`next_message_id`) through the history tool's `before` argument only while another page is needed, respect the returned `order`, and retain the latest revision of duplicate events.
 
