@@ -24,4 +24,4 @@ When Pine asks a question or presents a form, use the shared reply/form workflow
 
 Use Pine's actual replies, history, and outcomes to report who was contacted and what happened. Message delivery, a session status, or a timestamp alone does not prove a call was placed, a person answered, or the objective succeeded. If the result is unclear, say what is known and retrieve the relevant history instead of inventing a successful outcome.
 
-A request to end the task uses the shared `pine_end_task` workflow. Its response alone does not prove an ongoing call has disconnected.
+A request to pause, resume, or end the task uses the shared `pine_session_control` workflow. Its response alone does not prove an ongoing call has disconnected.

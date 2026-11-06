@@ -11,7 +11,7 @@ For a new or continuing phone task, read [Phone tasks](references/phone-tasks.md
 
 A clear task request is authorization: do not ask a separate “start?” question. Gather only information that is necessary to act.
 
-Use the currently discovered Pine tools by their semantic purpose; clients can namespace their names differently. The current service provides capabilities to create, list, and get sessions; send a message; read history and outcomes; submit a form response; and end a task (`pine_end_task`). It does not require a separate task-start call.
+Use the currently discovered Pine tools by their semantic purpose; clients can namespace their names differently. The current service provides capabilities to create, list, and get sessions; send a message; read history and outcomes; submit a form response; and control execution (`pine_session_control`). New tasks normally proceed after the instruction without a separate start call.
 
 ## Start or continue work
 
@@ -24,6 +24,8 @@ Do not claim an external action happened or the task is complete from a session 
 ## Read updates and respond
 
 After sending an instruction or answer, read the same session's history for questions, forms, state, task-finished content, connection or payment requests, and Pine's replies. Read outcomes as well when they are relevant. Present Pine's actual reply and result facts faithfully; explain them if useful, but do not manufacture a summary, outcome, or terminal status.
+
+Explain progress, failures, blockers, and next steps in plain language rather than exposing internal state names or raw fields. Use Pine's current response for account-specific facts; do not substitute general credit rules or unverified prices. When credits are insufficient, state the returned balance and minimum needed to start, if provided, and link to the Pine task page to add credits.
 
 Fetch bounded history pages. Follow the returned cursor (`next_message_id`) through the history tool's `before` argument only while another page is needed, respect the returned `order`, and retain the latest revision of duplicate events.
 
@@ -43,13 +45,13 @@ When history contains a form, submit it structurally when possible. Use that for
 
 If Pine requests payment, account connection, a verified phone-number binding, or another web intervention, give the user the returned Pine task link and have them complete it there. For a natural-language web-action request without an action card or task link, use the session link. After the user finishes the web action, query the original session again; do not resend the task instruction or create a new session. Use Pine's browser authorization with the user's existing account and credits; never ask for Pine login tokens, Pine API keys, or manually supplied Pine login credentials.
 
-## End a task
+## Control a task
 
-When the user asks to end or stop a Pine task, identify the matching session and call `pine_end_task` with its `session_id`. A clear request is sufficient; clarify only when the target is ambiguous. Pine decides whether that task can be ended. If it rejects the request, explain the returned reason rather than creating a replacement task or trying another execution path.
+Use `pine_session_control` with the matching `session_id` and an `action`: `start` to begin a waiting task or resume execution, `stop` to pause execution, or `close` to end the session. Follow the user's requested action; a clear request is sufficient, and clarification is needed only when the target or intent is ambiguous. Pine decides whether the operation is allowed. If it rejects the request, explain the returned reason rather than creating a replacement task or trying another execution path.
 
 Report the returned state faithfully: a user-ended task is not proof its objective succeeded, and the response does not prove an external action has already stopped. Do not end other tasks merely to free a task slot unless the user has authorized ending those tasks.
 
-If ending the task times out or returns an unknown result, query the same session and its history before deciding what to do next. The state may have changed before notification to the agent failed; do not blindly repeat the write or claim that downstream execution has stopped.
+If a control operation times out or returns an unknown result, query the same session and its history before deciding what to do next. The state may have changed before notification to the agent failed; do not blindly repeat the write or claim that downstream execution has stopped.
 
 ## Uncertain writes
 
