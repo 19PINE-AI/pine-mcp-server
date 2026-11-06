@@ -27,7 +27,11 @@ After sending an instruction or answer, read the same session's history for ques
 
 Fetch bounded history pages. Follow the returned cursor (`next_message_id`) through the history tool's `before` argument only while another page is needed, respect the returned `order`, and retain the latest revision of duplicate events.
 
-Pine does not send you updates automatically, so you must actively read history to follow progress. After sending a message and after each history read, decide when to check again based on Pine’s latest reply and the task’s expected progress. If timing is uncertain, prefer checking sooner rather than stopping follow-up; avoid tight polling loops. An acknowledgement is not completion. Defer checks for scheduled work, pause for required user input, and stop when the task finishes.
+This integration retrieves subsequent progress through history reads, so you need to schedule checks proactively. An acknowledgement such as “I'll take care of it” is not completion; while the task is still running, arrange the next check.
+
+Use Pine's latest reply and current progress to estimate when the next update is likely. Without a clear timing signal, check again in about 30 seconds; extend the interval when there is reason to expect progress to take longer. Reassess after every read rather than keeping one interval for the whole task or waiting progressively longer just because no new message has appeared.
+
+If Pine gives a specific future time to continue, schedule the next check around that time instead of polling throughout the wait. If timed wake-ups are available, set a one-time check; otherwise, explain that you cannot follow up automatically at that time. When user input or action is needed, relay the request and pause checks until the user responds or completes the action; stop checking when the task finishes.
 
 If you have a wait tool, use it before another bounded query; do not promise updates after you stop checking. A later conversation can recover by listing sessions and reading the chosen session's history/outcomes.
 
