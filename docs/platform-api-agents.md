@@ -98,7 +98,7 @@ Pine AI carries out real-world tasks for the user, such as phone calls to busine
 
 Start or continue work
 - When the user follows up on earlier work, list sessions and reuse the matching one. If several could match, ask which one; do not create a replacement session.
-- For a new task, create one session, then send one clear instruction. Creating a session does not start work; Pine continues after it gets the instruction, and no separate start call exists.
+- For a new task, create one session, then send one clear instruction. Creating a session does not start work; Pine continues after it gets the instruction, normally without a separate start call.
 - Write the instruction with: Goal; Contact, phone number or search criteria; Relevant background and requirements. Carry over every constraint the user gave. For a public business, give its number or enough detail for Pine to find it. For a private contact, use only a number the user gave; never guess one. Ask the user only for details that block progress, and never invent personal facts.
 - A clear task request is the user's authorization; do not ask a separate "start?" question.
 - Pass the user's time zone, an IANA name such as America/New_York, as timezone with every message you send to Pine. If you do not know it, omit it; Pine then reads times such as "tomorrow at 9 am" as UTC.
@@ -118,9 +118,9 @@ Answer Pine
 Uncertain writes
 - Creating sessions, sending messages and submitting forms are not idempotent. After a timeout or unknown result, do not retry blindly: list recent sessions or read the session history first, then decide.
 
-Ending tasks
-- Call pine_end_task only when the user asks to end a task. Pine decides whether it can end; if it refuses, explain the returned reason. Ending a task does not prove that an ongoing call has stopped.
-- With a Pine Platform API key, a task ends by itself when it produces its result, and pine_end_task is refused. Continue later work in a new session.
+Controlling tasks
+- Use pine_session_control with action start to begin or resume execution, stop to pause, or close to end a session, following the user's request. Pine decides whether the operation is allowed; if it refuses, explain the returned reason. The response does not prove that an ongoing call has stopped.
+- With a Pine Platform API key, a task ends by itself when it produces its result, and close is refused. Continue later work in a new session.
 
 Do not repeat sensitive form values without need.
 ```
@@ -152,7 +152,7 @@ A managed user's task ends by itself when it produces its result. Later work for
 | `pine_get_history` | Reads messages and events: Pine's replies, questions, forms, state, completion. | Opens a short real-time connection for each call. |
 | `pine_send_form_response` | Answers a form from Pine. | Not idempotent. |
 | `pine_get_outcomes` | Reads the session's shareable results. | |
-| `pine_end_task` | Ends a task on request. | Always refused with 409 `session_close_not_eligible`. |
+| `pine_session_control` | Controls execution with `action`: `start`, `stop`, or `close`. | `close` is refused with 409 `session_close_not_eligible`. |
 
 Results contain `session_url` and sometimes `task_url`. These are Pine web pages. A managed user has no Pine login, so do not show them to your end users.
 
@@ -176,7 +176,7 @@ Returned as a tool error (`isError: true`, with `error.code` and `error.status_c
 | 402 | `platform_spend_limit_reached` | Your monthly credit limit is used up. | Contact Pine, or wait for the next month. |
 | 409 | `platform_session_limit_reached` | Your running-task limit is reached. | Retry later, when a task has finished. |
 | 409 | `platform_session_state_conflict` | The session no longer accepts input. | Continue in a new session. |
-| 409 | `session_close_not_eligible` | `pine_end_task` for a managed user. | Do not call it. |
+| 409 | `session_close_not_eligible` | `pine_session_control` with `action: close` for a managed user. | Do not call it. |
 | 429 | `too_many_requests` | Your request quota is used up. | Retry with exponential backoff and jitter. |
 | — | `connection_error` | The real-time connection was refused or failed. | Check the key and ID; retry later. |
 
